@@ -97,7 +97,7 @@ function initMap(){
 
   /* ========== load population JSON ==========  */
   for (var i = 0;i < json_name.length;i++) {
-    $.getJSON('data/' + json_name[i] + '.json', function(data) {
+    $.getJSON('./data/' + json_name[i] + '.json', function(data) {
 	  console.log(data);
 	  var obj = JSON.parse(data);
       console.log(json_name[i] + obj.length);
