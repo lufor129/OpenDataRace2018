@@ -44,6 +44,29 @@ var Target_area=[
 	"6400900-029"//"民權里",
 ]
 
+var json_name = [
+	"鎮北里",
+	"興邦里",
+	"忠誠里",
+	"苓東里",
+	"苓雅里",
+	"苓中里",
+	"苓昇里",
+	"苓洲里",
+	"博仁里",
+	"沙地里",
+	"南端里",
+	"新化里",
+	"麗興里",
+	"新豐里",
+	"瑞竹里",
+	"竹南里",
+	"竹西里",
+	"興東里",
+	"民權里",
+]
+
+
 function initMap(){
   map=new google.maps.Map(document.getElementById('map'),{
 	center:{lat:22.608111,lng:120.302475},
@@ -71,6 +94,18 @@ function initMap(){
 	   fillOpacity:.1
 	 }
   });
+
+  /* ========== load population JSON ==========  */
+  for (var i = 0;i < json_name.length;i++) {
+    $.getJSON('data/' + json_name[i] + '.json', function(data) {
+	  console.log(data);
+	  var obj = JSON.parse(data);
+      console.log(json_name[i] + obj.length);
+    });
+  }
+  /* ==========================================  */
+
+
 
   /*var marker=new google.maps.Marker({
 	position:{lat:  22.610354, lng: 120.299564},
