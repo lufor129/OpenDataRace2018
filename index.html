@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <title>Document</title>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-    <div class="header">
-      <div id="barline">
-        <div class="data">
 
-        </div>
-        <div class="time">
-          <p>時間</p>
-          <input type="month" name="" id="startdate" min="" max="">
-          ~
-          <input type="month" name="" id="enddate" min="" max="">
-        </div>
-        <div class="choose">
-          <input type="checkbox" name="" id="park">
-          <span>公園</span>
-          <input type="checkbox" name="" id="school">
-          <span>學校</span>
-          <input type="checkbox" name="" id="building">
-          <span>公共建設</span>
-          <input type="checkbox" name="" id="hospital">
-          <span>醫療院所</span>
-        </div>
-        <input type="button" value="測試" id="test">
-        <div class="bar">
-          <p>時間軸  (時間單位:月)</p>
-          <input type="range" name="" id="bar" value="0" min="0" max="10" step="1">
-        </div>
-        <div class="time">
-          <span id="start"></span>
-          <span id="end"></span>
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <title>Document</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div class="header">
+    <div id="barline">
+      <div class="data">
+
+      </div>
+      <div class="time">
+        <p>時間</p>
+        <input type="month" name="" id="startdate" min="2011-01" max="2018-02"> ~
+        <input type="month" name="" id="enddate" min="2011-02" max="2018-03">
+      </div>
+      <div class="choose">
+        <input type="checkbox" name="" id="park">
+        <span>公園</span>
+        <input type="checkbox" name="" id="school">
+        <span>學校</span>
+        <input type="checkbox" name="" id="building">
+        <span>公共建設</span>
+        <input type="checkbox" name="" id="hospital">
+        <span>醫療院所</span>
+      </div>
+      <input type="button" value="測試" id="test">
+      <div class="bar">
+        <p>時間軸 (時間單位:月)</p>
+        <input type="range" name="" id="bar" value="0" min="0" max="10" step="1">
+      </div>
+      <div class="time">
+        <span id="start"></span>
+        <span id="end"></span>
       </div>
     </div>
-    <div id="map"></div>
-    <script src="index.js" charset="utf-8"></script>
-      <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsoDUzZYrgIBKvxoE8623vkToMa-1TI4U&callback=initMap">
-      </script>
-    <div class="footer">
-      <p>移定好</p>
-    </div>
+  </div>
+  <div id="map"></div>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsoDUzZYrgIBKvxoE8623vkToMa-1TI4U&callback=initMap">
+  </script>
+  <script src="index.js" charset="utf-8"></script>
+  <div class="footer">
+    <p>移定好</p>
+  </div>
 </body>
+
 </html>

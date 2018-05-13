@@ -1,28 +1,29 @@
 var map;
-var markers=[];
-var park_markers=[];
-var school_markers=[];
-var position=[
- {lat:  22.610354, lng: 120.299564},
- {lat:  22.615147, lng: 120.286689},
- {lat:  22.615797, lng: 120.301141},
- {lat:  22.615432, lng: 120.299999}
+var markers = [];
+var park_markers = [];
+var school_markers = [];
+var infowindow;
+var position = [
+	{ lat: 22.610354, lng: 120.299564 },
+	{ lat: 22.615147, lng: 120.286689 },
+	{ lat: 22.615797, lng: 120.301141 },
+	{ lat: 22.615432, lng: 120.299999 }
 ];
 
-var park_position=[
-  {lat:22.618480, lng:120.287005},
-  {lat:22.608853, lng:120.297476},
-  {lat:22.616317, lng:120.299617}
+var park_position = [
+	{ lat: 22.618480, lng: 120.287005 },
+	{ lat: 22.608853, lng: 120.297476 },
+	{ lat: 22.616317, lng: 120.299617 }
 ]
 
-var school_position=[
-  {lat:22.623224,lng:120.287833},
-  {lat:22.623083,lng:120.297790},
-  {lat:22.606087,lng:120.302081},
-  {lat:22.586989,lng:120.312037}
+var school_position = [
+	{ lat: 22.623224, lng: 120.287833 },
+	{ lat: 22.623083, lng: 120.297790 },
+	{ lat: 22.606087, lng: 120.302081 },
+	{ lat: 22.586989, lng: 120.312037 }
 ]
 
-var Target_area=[
+var Target_area = [
 	"6400900-023",//"鎮北里",
 	"6400900-021",//"興邦里",
 	"6400900-025",//"忠誠里",
@@ -67,44 +68,42 @@ var json_name = [
 ]
 
 
-function initMap(){
-  map=new google.maps.Map(document.getElementById('map'),{
-	center:{lat:22.608111,lng:120.302475},
-	zoom:14
-  });
+function initMap() {
+	map = new google.maps.Map(document.getElementById('map'), {
+		center: { lat: 22.608111, lng: 120.302475 },
+		zoom: 14
+	})
 
-  map.data.loadGeoJson("https://d3hu5rc2ze6fj6.cloudfront.net/wms?Request=GetGeoJSON&Layers=ronnywang/%E6%9D%91%E9%87%8C%E7%95%8C%E5%9C%96%28TWD97_121%E5%88%86%E5%B8%B6%29_%E5%9C%B0%E5%9C%96&sql=SELECT+%2A+FROM+this+WHERE+COUNTY_ID+%3D+%2764%27+ORDER+BY+_id_+ASC");
+	map.data.loadGeoJson("https://d3hu5rc2ze6fj6.cloudfront.net/wms?Request=GetGeoJSON&Layers=ronnywang/%E6%9D%91%E9%87%8C%E7%95%8C%E5%9C%96%28TWD97_121%E5%88%86%E5%B8%B6%29_%E5%9C%B0%E5%9C%96&sql=SELECT+%2A+FROM+this+WHERE+COUNTY_ID+%3D+%2764%27+ORDER+BY+_id_+ASC");
 
+	map.data.setStyle(function (feature) {
+		for (var i = 0; i < Target_area.length; i++) {
+			if (feature.getProperty("VILLAGE_ID") == Target_area[i]) {
+				return ({
+					fillColor: "red",
+					fillOpacity: .1,
+					strokeWeight: 1.5,
+					strokeColor: "gray"
+				});
+			}
+		}
+		return {
+			strokeWeight: .1,
+			strokeColor: "white",
+			fillColor: "white",
+			fillOpacity: .1
+		}
+	});
 
-  map.data.setStyle(function(feature){
-	  for(var i=0;i<Target_area.length;i++){
-		  if(feature.getProperty("VILLAGE_ID")==Target_area[i]){
-			  return({
-				  fillColor:"red",
-				  fillOpacity:.1,
-				  strokeWeight:1.5,
-				  strokeColor:"gray"
-			  });
-		  }
-	  }
-	  return {
-	   strokeWeight:.1,
-	   strokeColor:"white",
-	   fillColor:"white",
-	   fillOpacity:.1
-	 }
-  });
-
-  /* ========== load population JSON ==========  */
-  for (var i = 0;i < json_name.length;i++) {
-    $.getJSON('./data/' + json_name[i] + '.json', function(data) {
-	  console.log(data);
-	  var obj = JSON.parse(data);
-      console.log(json_name[i] + obj.length);
-    });
-  }
-  /* ==========================================  */
-
+	/* ========== load population JSON ==========  */
+	for (var i = 0; i < json_name.length; i++) {
+		$.getJSON('./data/' + json_name[i] + '.json', function (data) {
+			console.log(data);
+			var obj = JSON.parse(data);
+			console.log(json_name[i] + obj.length);
+		});
+	}
+	/* ==========================================  */
 
 
   /*var marker=new google.maps.Marker({
@@ -117,7 +116,6 @@ function initMap(){
    for(var i=0;i<position.length;i++){
 	 addMarker(i,position,markers);
    }
-   */
 
    var infowindow=new google.maps.InfoWindow({
 	 content: "<h2>皮卡 皮卡</h2>"
@@ -131,94 +129,102 @@ function initMap(){
 	 }else{
 	   infowindow.close();
 	 }
-   });
+	 });
+	 */
 }
-function addMarker(e,position,markers){
-  markers[e]=new google.maps.Marker({
-	position: {
-	  lat: position[e].lat,
-	  lng: position[e].lng
-	},
-	map:map,
-	animation:google.maps.Animation.DROP
-  });
+function addMarker(e, position, markers) {
+	markers[e] = new google.maps.Marker({
+		position: {
+			lat: position[e].lat,
+			lng: position[e].lng
+		},
+		map: map,
+		animation: google.maps.Animation.DROP
+	});
 
-  markers[e].addListener("click",function(){
-	$.insertInformation(position[e].lat,position[e].lng);
-	markers[e].setAnimation(google.maps.Animation.BOUNCE);
-	setTimeout(function(){
-	  markers[e].setAnimation(null)
-	},3000);
-  });
+	markers[e].addListener("click", function () {
+		//$.insertInformation(position[e].lat,position[e].lng);
+		if (infowindow) {
+			infowindow.close();
+		}
+		infowindow = new google.maps.InfoWindow();
+		infowindow.setContent("<p>lat:" + position[e].lat + "</p>");
+		infowindow.open(map, markers[e]);
+		markers[e].setAnimation(google.maps.Animation.BOUNCE);
+		setTimeout(function () {
+			markers[e].setAnimation(null)
+		}, 3000);
+	});
 }
 
-function changeColor(area,opacity){
-	map.data.forEach(function(feature){
-		if(area==feature.getProperty("VILLAGE_ID")){
-			map.data.overrideStyle(feature,{
-				fillOpacity:opacity
+function changeColor(area, opacity) {
+	map.data.forEach(function (feature) {
+		if (area == feature.getProperty("VILLAGE_ID")) {
+			map.data.overrideStyle(feature, {
+				fillOpacity: opacity
 			});
 		}
 	});
 }
 
-function cleanMarker(markers){
-  for(var i=0;i<markers.length;i++){
-	if(markers[i]){
-	  markers[i].setMap(null);
+function cleanMarker(markers) {
+	for (var i = 0; i < markers.length; i++) {
+		if (markers[i]) {
+			markers[i].setMap(null);
+		}
 	}
-  }
-  markers=[];
+	markers = [];
 }
+$(function () {
+	$("#park").change(function () {
+		var infowindow = new google.maps.InfoWindow();
+		if (this.checked) {
+			cleanMarker(park_markers);
+			for (var i = 0; i < park_position.length; i++) {
+				addMarker(i, park_position, park_markers);
+			}
+		} else {
+			cleanMarker(park_markers);
+		}
+	});
 
-$(function(){
-   $("#park").change(function(){
-	 if(this.checked){
-	   cleanMarker(park_markers);
-	   for(var i=0;i<park_position.length;i++){
-		 addMarker(i,park_position,park_markers);
-	   }
-	 }else{
-	   cleanMarker(park_markers);
-	 }
-   });
+	$("#school").change(function () {
 
-   $("#school").change(function(){
-	 if(this.checked){
-	   cleanMarker(school_markers);
-	   for(var i=0;i<school_position.length;i++){
-		 addMarker(i,school_position,school_markers);
-	   }
-	 }else{
-	   cleanMarker(school_markers);
-	 }
-   });
+		if (this.checked) {
+			cleanMarker(school_markers);
+			for (var i = 0; i < school_position.length; i++) {
+				addMarker(i, school_position, school_markers);
+			}
+		} else {
+			cleanMarker(school_markers);
+		}
+	});
 
 
-   $("#bar").change(function(){
-	   var opacity=$(this).val()/10;
-   /*  map.data.setStyle(function(feature){
-	   for(var i=0;i<Target_area.length;i++){
-		  if(feature.getProperty("V_Name")==Target_area[i]){
-			  return({
-				  fillOpacity:opacity,
-				  fillColor:"red"
-			   });
-			   }
-		   }
-	   });
-   */
+	$("#bar").change(function () {
+		var opacity = $(this).val() / 10;
+		/*  map.data.setStyle(function(feature){
+			for(var i=0;i<Target_area.length;i++){
+			 if(feature.getProperty("V_Name")==Target_area[i]){
+				 return({
+					 fillOpacity:opacity,
+					 fillColor:"red"
+					});
+					}
+				}
+			});
+		*/
 
-	   for(var i=0;i<Target_area.length;i++){
-		   changeColor(Target_area[i],opacity);
-	   }
-   });
-   $.insertInformation=function(lat,lng){
-	 $(".information #firstp").html("<p>lat:"+lat+"</p>");
-	 $(".information #secondp").html("<p>lng:"+lng+"</p>");
-   };
+		for (var i = 0; i < Target_area.length; i++) {
+			changeColor(Target_area[i], opacity);
+		}
+	});
+	$.insertInformation = function (lat, lng) {
+		$(".information #firstp").html("<p>lat:" + lat + "</p>");
+		$(".information #secondp").html("<p>lng:" + lng + "</p>");
+	};
 
-   $("#test").click(function(){
-	   changeColor("6400100-020",0.5);
-   });
+	$("#test").click(function () {
+		changeColor("6400100-020", 0.5);
+	});
 });
