@@ -432,4 +432,11 @@ $(function () {
 			changeColor(Target_area[i],population_density[i]*0.8);
 		}
 	});
+	$("#test").click(function () {
+		for(var i in Target_area){
+			changeColor(Target_area[i],Math.random()*0.8);
+		}
+		console.log(typeof population);
+		console.log(population[3][3].人口數);
+	});
 });	
