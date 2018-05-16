@@ -8,6 +8,7 @@
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <title>Document</title>
   <link rel="stylesheet" href="index.css">
+  <link rel="shortcut icon" href="">
 </head>
 
 <body>
@@ -20,6 +21,7 @@
         <p>時間</p>
         <input type="month" name="" id="startdate" min="2011-01" max="2018-02" required> ~
         <input type="month" name="" id="enddate" min="2011-02" max="2018-03" required>
+        <input type="button" value="確認" id="confirmtime" style="width: 50px">
       </div>
       <div class="choose">
         <input type="checkbox" name="" id="park">
@@ -27,13 +29,14 @@
         <input type="checkbox" name="" id="school">
         <span>學校</span>
         <input type="checkbox" name="" id="public">
-        <span>公共建設</span>
+        <span>藝文資訊</span>
         <input type="checkbox" name="" id="medical">
         <span>醫療院所</span>
+        <input type="button" value="測試" id="test">
       </div>
       <div class="bar">
         <p>時間軸 (時間單位:月)</p>
-        <input type="range" name="" id="bar" value="0" min="0" max="10" step="1">
+        <input type="range" name="" id="bar" value="0" min="0" max="0" step="1">
       </div>
       <div class="time">
         <span id="start"></span>

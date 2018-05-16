@@ -5,6 +5,8 @@ var school_markers = [];
 var public_markers=[];
 var medical_markers=[];
 var infowindow;
+var population=[];
+var test={};
 
 var park_position = [
 	{ 
@@ -216,6 +218,28 @@ var json_name = [
 	"民權里",
 ]
 
+var village_area=[
+	1.8390,
+	0.8240,
+	0.3720,
+	1.61225,
+	0.0731,
+	0.333,
+	0.422375,
+	2.013,
+	0.042,
+	0.098,
+	0.2447,
+	0.061,
+	0.4179,
+	0.05,
+	0.309133,
+	0.2846,
+	0.4425,
+	0.161,
+	0.1559
+]
+
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -230,7 +254,7 @@ function initMap() {
 			if (feature.getProperty("VILLAGE_ID") == Target_area[i]) {
 				return ({
 					fillColor: "red",
-					fillOpacity: .1,
+					fillOpacity: 0,
 					strokeWeight: 1.5,
 					strokeColor: "gray"
 				});
@@ -247,39 +271,13 @@ function initMap() {
 	/* ========== load population JSON ==========  */
 	for (var i = 0; i < json_name.length; i++) {
 		$.getJSON('./data/' + json_name[i] + '.json', function (data) {
-			console.log(data);
-			var obj = JSON.parse(data);
-			console.log(json_name[i] + obj.length);
+			population.push(data);
+			//想用成字典，但不知道為什麼一直出錯，只好用成陣列
+			//求在這裡如何使用字典? 還是要在另外一個for中轉成字典?
 		});
 	}
 	/* ==========================================  */
-
-
-  /*var marker=new google.maps.Marker({
-	position:{lat:  22.610354, lng: 120.299564},
-	map:map,
-	animation: google.maps.Animation.DROP,
-   // icon:'http://www.oxxostudio.tw/img/articles/201801/google-maps-3-marker-icon.png'
-  });
-
-   for(var i=0;i<position.length;i++){
-	 addMarker(i,position,markers);
-   }
-
-   var infowindow=new google.maps.InfoWindow({
-	 content: "<h2>皮卡 皮卡</h2>"
-   });
-
-   var a=-1;
-   marker.addListener("click",function(){
-	 a=a*-1;
-	 if(a>0){
-	   infowindow.open(map,marker);
-	 }else{
-	   infowindow.close();
-	 }
-	 });
-	 */
+	
 }
 function addMarker(e, position, markers,markerpic) {
 	markers[e] = new google.maps.Marker({
@@ -340,6 +338,17 @@ function cleanMarker(markers) {
 	}
 	markers = [];
 }
+
+function finddata(area,time){
+	console.log(area);
+	console.log(time);
+	for(var i=0;i<population[area].length;i++){
+		if(time[0]==population[area][i].年 && time[1]==population[area][i].月)
+			return population[area][i];
+	}
+	return "找不到";
+}
+
 $(function () {
 	$("#park").change(function () {
 		var markerpic="http://maps.google.com/mapfiles/ms/icons/green-dot.png";
@@ -389,30 +398,38 @@ $(function () {
 		}
 	});
 
-	$("#bar").change(function () {
-		var opacity = $(this).val() / 10;
-		/*  map.data.setStyle(function(feature){
-			for(var i=0;i<Target_area.length;i++){
-			 if(feature.getProperty("V_Name")==Target_area[i]){
-				 return({
-					 fillOpacity:opacity,
-					 fillColor:"red"
-					});
-					}
-				}
-			});
-		*/
-
-		for (var i = 0; i < Target_area.length; i++) {
-			changeColor(Target_area[i], opacity);
+	$("#confirmtime").click(function(){
+		var startdate=$("#startdate").val().split("-");
+		var enddate=$("#enddate").val().split("-");
+		time=(enddate[0]-startdate[0])*12+(enddate[1]-startdate[1]);
+		if(time>0){
+			$("#bar").attr("max",String(time));
 		}
 	});
-	$.insertInformation = function (lat, lng) {
-		$(".information #firstp").html("<p>lat:" + lat + "</p>");
-		$(".information #secondp").html("<p>lng:" + lng + "</p>");
-	};
 
-	$("#test").click(function () {
-		changeColor("6400100-020", 0.5);
+	$("#bar").change(function () {
+		var startdate=$("#startdate").val().split("-");
+		var startdate_year=parseInt(startdate[0]);
+		var startdate_month=parseInt(startdate[1]);
+		var nowdate=[];
+		var temp=(startdate_month+parseInt($(this).val()))/12;	//年
+		if(Number.isInteger(temp))
+			nowdate.push(startdate_year-1911+temp-1);
+		else
+			nowdate.push(startdate_year-1911+Math.floor(temp));
+
+		var temp2=(startdate_month+parseInt($(this).val()))%12;	 //月
+		if(temp2==0)	
+			nowdate.push(12);
+		else
+			nowdate.push(temp2);
+		var population=[];
+		var population_density=[];
+		for(var i=0;i<Target_area.length;i++){
+			population.push(finddata(i,nowdate));
+			population_density.push((population[i].人口數/village_area[i])*0.00008);
+			console.log(population_density[i]);
+			changeColor(Target_area[i],population_density[i]*0.8);
+		}
 	});
-});
+});	
