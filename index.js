@@ -268,6 +268,25 @@ function initMap() {
 		}
 	});
 
+	map.data.addListener("click",function(event){
+		if(infowindow){
+			infowindow.close();
+		}
+		infowindow=new google.maps.InfoWindow();
+		var cooridinate={lat:event.latLng.lat(),lng:event.latLng.lng()};
+		infowindow.setPosition(cooridinate);
+		infowindow.setContent(event.feature.getProperty("VILLAGE_ID"));
+		console.log(event.feature.getProperty("VILLAGE_ID"));
+		console.log(Target_area.indexOf(event.feature.getProperty("VILLAGE_ID")));
+		var subscript=Target_area.indexOf(event.feature.getProperty("VILLAGE_ID"));
+		if(subscript>=0){
+			var nowdate=$.finddate();
+			var position_data=finddata(subscript,nowdate);
+			infowindow.setContent(json_name[subscript]+InfoContent(position_data));
+			infowindow.open(map);
+		}
+	});
+
 	/* ========== load population JSON ==========  */
 	for (var i = 0; i < json_name.length; i++) {
 		$.getJSON('./data/' + json_name[i] + '.json', function (data) {
@@ -349,6 +368,7 @@ function finddata(area,time){
 	return "找不到";
 }
 
+
 $(function () {
 	$("#park").change(function () {
 		var markerpic="http://maps.google.com/mapfiles/ms/icons/green-dot.png";
@@ -408,21 +428,7 @@ $(function () {
 	});
 
 	$("#bar").change(function () {
-		var startdate=$("#startdate").val().split("-");
-		var startdate_year=parseInt(startdate[0]);
-		var startdate_month=parseInt(startdate[1]);
-		var nowdate=[];
-		var temp=(startdate_month+parseInt($(this).val()))/12;	//年
-		if(Number.isInteger(temp))
-			nowdate.push(startdate_year-1911+temp-1);
-		else
-			nowdate.push(startdate_year-1911+Math.floor(temp));
-
-		var temp2=(startdate_month+parseInt($(this).val()))%12;	 //月
-		if(temp2==0)	
-			nowdate.push(12);
-		else
-			nowdate.push(temp2);
+		var nowdate=$.finddate();
 		var population=[];
 		var population_density=[];
 		for(var i=0;i<Target_area.length;i++){
@@ -432,6 +438,26 @@ $(function () {
 			changeColor(Target_area[i],population_density[i]*0.8);
 		}
 	});
+
+	$.finddate=function(){
+		var startdate=$("#startdate").val().split("-");
+		var startdate_year=parseInt(startdate[0]);
+		var startdate_month=parseInt(startdate[1]);
+		var nowdate=[];
+		var temp=(startdate_month+parseInt($("#bar").val()))/12;	//年
+		if(Number.isInteger(temp))
+			nowdate.push(startdate_year-1911+temp-1);
+		else
+			nowdate.push(startdate_year-1911+Math.floor(temp));
+
+		var temp2=(startdate_month+parseInt($("#bar").val()))%12;	 //月
+		if(temp2==0)	
+			nowdate.push(12);
+		else
+			nowdate.push(temp2);
+		return nowdate;
+	}
+
 	$("#test").click(function () {
 		for(var i in Target_area){
 			changeColor(Target_area[i],Math.random()*0.8);
