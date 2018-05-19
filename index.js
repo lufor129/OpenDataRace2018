@@ -219,25 +219,25 @@ var json_name = [
 ]
 
 var village_area=[
-	1.8390,
-	0.8240,
-	0.3720,
-	1.61225,
-	0.0731,
-	0.333,
-	0.422375,
-	2.013,
-	0.042,
-	0.098,
-	0.2447,
-	0.061,
-	0.4179,
-	0.05,
-	0.309133,
-	0.2846,
-	0.4425,
-	0.161,
-	0.1559
+	3292307.7789,
+	964325.0302,
+	488461.5954,
+	344694.7658,
+	49307.1036,
+	69744.8833,
+	71471.8835,
+	124546.6068,
+	59843.7408,
+	151885.5869,
+	112484.9336,
+	76281.1732,
+	468557.7255,
+	46790.377,
+	732104.4434,
+	2304946.3303,
+	1216624.9234,
+	163932.7892,
+	127891.3725
 ]
 
 
@@ -253,7 +253,7 @@ function initMap() {
 		for (var i = 0; i < Target_area.length; i++) {
 			if (feature.getProperty("VILLAGE_ID") == Target_area[i]) {
 				return ({
-					fillColor: "red",
+					fillColor:"red",
 					fillOpacity: 0,
 					strokeWeight: 1.5,
 					strokeColor: "gray"
@@ -276,13 +276,11 @@ function initMap() {
 		var cooridinate={lat:event.latLng.lat(),lng:event.latLng.lng()};
 		infowindow.setPosition(cooridinate);
 		infowindow.setContent(event.feature.getProperty("VILLAGE_ID"));
-		console.log(event.feature.getProperty("VILLAGE_ID"));
-		console.log(Target_area.indexOf(event.feature.getProperty("VILLAGE_ID")));
 		var subscript=Target_area.indexOf(event.feature.getProperty("VILLAGE_ID"));
 		if(subscript>=0){
 			var nowdate=$.finddate();
 			var position_data=finddata(subscript,nowdate);
-			infowindow.setContent(json_name[subscript]+InfoContent(position_data));
+			infowindow.setContent("<p>"+json_name[subscript]+"</p>"+InfoContent(position_data));
 			infowindow.open(map);
 		}
 	});
@@ -310,7 +308,6 @@ function addMarker(e, position, markers,markerpic) {
 	});
 
 	markers[e].addListener("click", function () {
-		//$.insertInformation(position[e].lat,position[e].lng);
 		if (infowindow) {
 			infowindow.close();
 		}
@@ -340,11 +337,26 @@ function InfoContent(marker_position){
 }
 
 function changeColor(area, opacity) {
+	var enhanceColor=1   //mutiple opacity to enhance color
 	map.data.forEach(function (feature) {
 		if (area == feature.getProperty("VILLAGE_ID")) {
-			map.data.overrideStyle(feature, {
-				fillOpacity: opacity
-			});
+			if(opacity>10){
+				map.data.overrideStyle(feature,{
+					fillColor:"#FF0000",
+					fillOpacity:(opacity*0.01)*enhanceColor
+				});
+			}else if(opacity>1){
+				map.data.overrideStyle(feature,{
+					fillColor:"#FFA500",
+					fillOpacity:(opacity*0.1)*enhanceColor
+				});
+			}else{
+				map.data.overrideStyle(feature,{
+					fillColor:"#FFFF00",
+					fillOpacity:opacity*enhanceColor
+				});
+			}
+			console.log(feature.getProperty("V_Name")+" : "+opacity*100);
 		}
 	});
 }
@@ -359,13 +371,11 @@ function cleanMarker(markers) {
 }
 
 function finddata(area,time){
-	console.log(area);
-	console.log(time);
 	for(var i=0;i<population[area].length;i++){
 		if(time[0]==population[area][i].年 && time[1]==population[area][i].月)
 			return population[area][i];
 	}
-	return "找不到";
+	return "請先設定日期";
 }
 
 
@@ -433,10 +443,12 @@ $(function () {
 		var population_density=[];
 		for(var i=0;i<Target_area.length;i++){
 			population.push(finddata(i,nowdate));
-			population_density.push((population[i].人口數/village_area[i])*0.00008);
-			console.log(population_density[i]);
-			changeColor(Target_area[i],population_density[i]*0.8);
+			population_density.push((population[i].人口數/(village_area[i]*0.001)));
+			//console.log(population_density[i]);
+			changeColor(Target_area[i],population_density[i]);
 		}
+		var printdate=nowdate[0]+"年 "+nowdate[1]+"月";
+		$("#nowtime").html("當前時間 : "+printdate);
 	});
 
 	$.finddate=function(){

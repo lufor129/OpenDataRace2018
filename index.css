@@ -13,13 +13,17 @@ div#barline{
 	background-color: seashell;
 	padding: 10px;
 }
-div.bar p{
+div.bar h3{
 	text-align: center;
 	margin:3px;
 }
+div.bar p{
+	margin: 0;
+	margin-left:5px;
+}
 div.bar input{
 	width: 95%;
-	margin-bottom: 20px;
+	margin-bottom: 8px;
 }
 div.time{
 	display: inline;
